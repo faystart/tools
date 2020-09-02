@@ -1,1 +1,1 @@
-url https://raw.githubusercontent.com/zhfe981206/filebrowser/master/filebrowser.service -O /lib/systemd/system/filebrowser.service
+'curl https://raw.githubusercontent.com/faystart/tools/master/filebrowser/filebrowser.service -O /lib/systemd/system/filebrowser.service'
