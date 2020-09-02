@@ -3,7 +3,7 @@ Description=File Browser
 After=network.target
 
 [Service]
-ExecStart=filebrowser -c /etc/filebrowser/config.json
+ExecStart=nohup filebrowser -c /etc/filebrowser/config.json &
 
 [Install]
 WantedBy=multi-user.target
