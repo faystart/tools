@@ -2,23 +2,24 @@
 
   * [0. Google Drive API](#0-google-drive-api)
     + [Enable API](#enable-api)
-  * [1.安装 Rclone](#1---rclone)
-    + [准备](#--)
-    + [安装 Rclone](#---rclone)
-    + [过程](#--)
-    + [挂载](#--)
-    + [开机挂载](#----)
-  * [安装 Aria2](#---aria2)
-    + [准备](#---1)
-    + [安装](#--)
-    + [下载完成后自动上传](#---------)
-  * [安装 File Browser](#---file-browser)
-    + [安装](#---1)
-    + [启动](#--)
-    + [设置](#--)
+  * [1.Install Rclone](#1install-rclone)
+    + [Prepare](#prepare)
+    + [Install Rclone](#install-rclone)
+    + [The process](#the-process)
+    + [Mount](#mount)
+    + [Mount when start](#mount-when-start)
+  * [Install Aria2](#install-aria2)
+    + [Prepare](#prepare-1)
+    + [Installation](#installation)
+    + [When download complete, upload to drive](#when-download-complete--upload-to-drive)
+  * [File Browser](#file-browser)
+    + [Installation](#installation-1)
+    + [Start File Browser when reboot](#start-file-browser-when-reboot)
+    + [Setting](#setting)
   * [Goindex with Worker space](#goindex-with-worker-space)
-  * [安装 AriaNG](#---ariang)
+  * [AriaNG](#ariang)
 
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 
 环境 Centos 8 64x
@@ -49,11 +50,11 @@ MKaXqPk7Qevs978679iixPUBDRe
 
 
 
-## 1.安装 Rclone
+## 1.Install Rclone
 
 refer: https://www.yunloc.com/562.html
 
-### 准备
+### Prepare
 
 ```
  yum -y install epel-release
@@ -65,13 +66,13 @@ refer: https://www.yunloc.com/562.html
 yum -y install wget unzip screen fuse fuse-devel
 ```
 
-### 安装 Rclone
+### Install Rclone
 
 ```
 curl https://rclone.org/install.sh | sudo bash
 ```
 
-### 过程
+### The process
 
 ```
 rclone config
@@ -245,7 +246,7 @@ and no
     y/e/d> y
 ```
 
-### 挂载
+### Mount
 
 - mkdir -p  /root/gdrive
 - rclone mount remote:video /root/gdrive --allow-other --allow-non-empty --vfs-cache-mode writes
@@ -253,7 +254,7 @@ and no
 - 挂载只要几秒钟，但终端不会返回成功信息，关闭 SSH 重连即可。
 - df -h 查看结果
 
-### 开机挂载
+### Mount when start
 
 refer：https://www.moerats.com/archives/481/
 
@@ -272,24 +273,24 @@ Restart=on-abort
 User=root
 ```
 
-## 安装 Aria2
+## Install Aria2
 
 refer https://p3terx.com/archives/offline-download-of-onedrive-gdrive.html
 
-### 准备
+### Prepare 
 
 ```
 yum -y install wget curl ca-certificates
 ```
 
-### 安装
+### Installation
 
 ```
 wget -N git.io/aria2.sh && chmod +x aria2.sh && ./aria2.sh
 ./aria2.sh
 ```
 
-### 下载完成后自动上传
+### When download complete, upload to drive
 
 ```
 yum install -y nano
@@ -319,13 +320,13 @@ service aria2 restart
 /root/.aria2c/upload.sh
 ```
 
-## 安装 File Browser
+## File Browser
 
 refer1:https://blog.csdn.net/Homewm/article/details/87931165
 
 refer2:https://blog.csdn.net/ywd1992/article/details/93030495
 
-### 安装
+### Installation
 
 ```
 yum -y  install curl
@@ -355,7 +356,7 @@ sudo filebrowser -d /etc/filemanager/filebrowser.db users add admin password123 
 
 admin 为用户，password123 为密码
 
-### 启动
+### Start File Browser when reboot
 
 编写 service
 
@@ -385,7 +386,7 @@ systemctl start filebrowser
 systemctl enable filebrowser
 ```
 
-### 设置
+### Setting
 
 点击【设置】→【全局设置】→【用户默认设置】→ 将目录范围改为你想要显示的文件夹，如` ./root/downloads` →点击保存
 
@@ -1345,7 +1346,7 @@ String.prototype.trim = function (char) {
 
 ```
 
-## 安装 AriaNG
+## AriaNG
 
 - 下载 https://github.com/mayswind/AriaNg/releases/download/1.1.6/AriaNg-1.1.6.zip
 - 解压缩
