@@ -1,23 +1,23 @@
 # Aria2 （and AriaNG) +Rclone + Google Drive + Goindex + File browser
 
-  * [0. Google Drive API](#0-google-drive-api)
-    + [Enable API](#enable-api)
-  * [1.Install Rclone](#1install-rclone)
-    + [Prepare](#prepare)
-    + [Install Rclone](#install-rclone)
-    + [The process](#the-process)
-    + [Mount](#mount)
-    + [Mount when start](#mount-when-start)
-  * [Install Aria2](#install-aria2)
-    + [Prepare](#prepare-1)
-    + [Installation](#installation)
-    + [When download complete, upload to drive](#when-download-complete--upload-to-drive)
-  * [File Browser](#file-browser)
-    + [Installation](#installation-1)
-    + [Start File Browser when reboot](#start-file-browser-when-reboot)
-    + [Setting](#setting)
-  * [Goindex with Worker space](#goindex-with-worker-space)
-  * [AriaNG](#ariang)
+- [0. Google Drive API](#0-google-drive-api)
+  * [Enable API](#enable-api)
+- [1.Install Rclone](#1install-rclone)
+  * [Prepare](#prepare)
+  * [Install Rclone](#install-rclone)
+  * [The process](#the-process)
+  * [Mount](#mount)
+  * [Mount when start](#mount-when-start)
+- [Install Aria2](#install-aria2)
+  * [Prepare](#prepare-1)
+  * [Installation](#installation)
+  * [Upload after download complete](#upload-after-download-complete)
+- [File Browser](#file-browser)
+  * [Installation](#installation-1)
+  * [Start File Browser when reboot](#start-file-browser-when-reboot)
+  * [Setting](#setting)
+- [Goindex with Worker space](#goindex-with-worker-space)
+- [AriaNG](#ariang)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -290,7 +290,7 @@ wget -N git.io/aria2.sh && chmod +x aria2.sh && ./aria2.sh
 ./aria2.sh
 ```
 
-### When download complete, upload to drive
+### Upload after download complete
 
 ```
 yum install -y nano
