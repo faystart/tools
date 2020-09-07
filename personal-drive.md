@@ -256,6 +256,14 @@ and no
 
 ### Mount when start
 
+先安装 nano 
+
+```
+yum install -y nano
+```
+
+**方法一：失效**
+
 refer：https://www.moerats.com/archives/481/
 
 ```
@@ -273,6 +281,49 @@ Restart=on-abort
 User=root
 ```
 
+方法二：
+
+```
+vi/etc/systemd/system/rclone.service
+```
+
+输入：
+
+```
+[Unit]
+Description=rclone
+    
+[Service]
+User=root
+ExecStart=rclone mount remote:video /root/gdrive --allow-other --allow-non-empty --vfs-cache-mode writes
+Restart=on-abort
+    
+[Install]
+WantedBy=multi-user.target
+```
+
+开机启动
+
+```
+systemctl start rclone
+```
+
+设置开机其启
+
+```
+systemctl enable rclone
+```
+
+其他命令
+
+```
+重启：systemctl restart rclone
+停止：systemctl stop rclone
+状态：systemctl status rclone
+```
+
+
+
 ## Install Aria2
 
 refer https://p3terx.com/archives/offline-download-of-onedrive-gdrive.html
@@ -287,13 +338,13 @@ yum -y install wget curl ca-certificates
 
 ```
 wget -N git.io/aria2.sh && chmod +x aria2.sh && ./aria2.sh
-./aria2.sh
 ```
 
 ### Upload after download complete
 
+必须先安装 nano
+
 ```
-yum install -y nano
 nano /root/.aria2c/aria2.conf
 ```
 
@@ -336,15 +387,15 @@ curl -fsSL https://filebrowser.xyz/get.sh | bash
 创建配置数据库：
 
 ```
-sudo filebrowser -d /etc/filemanager/filebrowser.db config init
+filebrowser -d /etc/filemanager/filebrowser.db config init
 ```
 
 监听地址和端口，设置语言
 
 ```
-sudo filebrowser -d /etc/filemanager/filebrowser.db config set --address 0.0.0.0 
-sudo filebrowser -d /etc/filemanager/filebrowser.db config set --port 6080
-sudo filebrowser -d /etc/filemanager/filebrowser.db config set --locale zh-cn 
+filebrowser -d /etc/filemanager/filebrowser.db config set --address 0.0.0.0 
+filebrowser -d /etc/filemanager/filebrowser.db config set --port 6080
+filebrowser -d /etc/filemanager/filebrowser.db config set --locale zh-cn 
 ```
 
 设置日志、用户
