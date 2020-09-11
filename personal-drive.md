@@ -18,6 +18,8 @@
   * [Setting](#setting)
 - [Goindex with Worker space](#goindex-with-worker-space)
 - [AriaNG](#ariang)
+- [VPS auto restart](#vps-auto-restart)
+- [https for Aria2](#https-for-aria2)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -1403,3 +1405,64 @@ String.prototype.trim = function (char) {
 - 解压缩
 - 上传到 github
 - 使用 Github pages 服务，不开启 https
+
+## VPS auto restart
+
+refer: https://www.moerats.com/archives/120/
+
+- yum install vixie-cron crontabs\
+
+- 如果报错 Unable to find a match: vixie-cron
+
+  ```
+  yum -y install vim-enhanced.x86_64
+  ```
+
+- systemctl start crond / chkconfig crond on
+
+- 编辑定时脚本
+
+  ```
+  crontab -e
+  #每天凌晨1点重启服务器
+  0 1 * * * /sbin/reboot
+  #每3小时重启一次
+  0 */3 * * * /sbin/reboot
+  ```
+
+- 重启 crond
+  - systemctl stop crond
+  - systemctl start crond / service crond start
+
+## https for Aria2
+
+教程 https://certbot.eff.org/lets-encrypt/centosrhel8-other
+
+- 依次安装
+
+- 需要 Enable EPEL repo
+
+- 安装结束后记下 证书所在地址
+
+- crontab -e 
+
+  - ```
+    0 0,12 * * * root python3 -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q
+    # 自动更新证书
+    ```
+
+- 启用，编辑 `aria2.conf`
+
+```
+nano /root/.aria2c/aria2.conf
+```
+
+```
+#是否启用RPC服务的SSL/TLS加密
+rpc-secure=true
+#申请的域名crt证书文件路径，自行修改
+rpc-certificate=//etc/letsencrypt/live/xxxx.xxx/fullchain.pem
+##申请的域名key证书文件路径，自行修改
+rpc-private-key=/etc/letsencrypt/live/xxxx.xxx/privkey.pem
+```
+
