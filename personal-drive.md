@@ -1,4 +1,4 @@
-# Aria2 （and AriaNG) +Rclone + Google Drive + Goindex + File browser
+# Aria2 （https,and AriaNG) +Rclone + Google Drive + Goindex + File browser(https)
 
 - [0. Google Drive API](#0-google-drive-api)
   * [Enable API](#enable-api)
@@ -12,14 +12,15 @@
   * [Prepare](#prepare-1)
   * [Installation](#installation)
   * [Upload after download complete](#upload-after-download-complete)
+- [https for Aria2(acme.sh)](#https-for-aria2-acmesh-)
 - [File Browser](#file-browser)
   * [Installation](#installation-1)
   * [Start File Browser when reboot](#start-file-browser-when-reboot)
   * [Setting](#setting)
+- [Add domain to filebrowser](#add-domain-to-filebrowser)
 - [Goindex with Worker space](#goindex-with-worker-space)
 - [AriaNG](#ariang)
 - [VPS auto restart](#vps-auto-restart)
-- [https for Aria2](#https-for-aria2)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -59,13 +60,7 @@ refer: https://www.yunloc.com/562.html
 ### Prepare
 
 ```
- yum -y install epel-release
-```
-
-安装依赖
-
-```centos
-yum -y install wget unzip screen fuse fuse-devel
+ yum -y install epel-release wget unzip screen fuse fuse-devel
 ```
 
 ### Install Rclone
@@ -286,7 +281,7 @@ User=root
 方法二：
 
 ```
-vi/etc/systemd/system/rclone.service
+nano /etc/systemd/system/rclone.service
 ```
 
 输入：
@@ -310,7 +305,7 @@ WantedBy=multi-user.target
 systemctl start rclone
 ```
 
-设置开机其启
+设置开机自启
 
 ```
 systemctl enable rclone
@@ -344,15 +339,15 @@ wget -N git.io/aria2.sh && chmod +x aria2.sh && ./aria2.sh
 
 ### Upload after download complete
 
-必须先安装 nano
-
 ```
 nano /root/.aria2c/aria2.conf
 ```
 
 找到“下载完成后执行的命令”，把`clean.sh`替换为`upload.sh`。
 
-输入`nano /root/.aria2c/script.conf`打开附加功能脚本配置文件进行修改，有中文注释，按照自己的实际情况进行修改
+`nano /root/.aria2c/script.conf`
+
+打开附加功能脚本配置文件进行修改，有中文注释，按照自己的实际情况进行修改
 
 ```none
 # 网盘名称(RCLONE 配置时填写的 name)
@@ -371,6 +366,35 @@ service aria2 restart
 
 ```none
 /root/.aria2c/upload.sh
+```
+
+## https for Aria2(acme.sh)
+
+https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E
+
+```
+curl  https://get.acme.sh | sh
+```
+
+生成证书
+
+- 停止 nginx (使用80端口)
+
+- ```
+  acme.sh  --issue -d mydomain.com   --standalone
+  ```
+
+- ```
+  nano /root/.aria2c/aria2.conf
+  ```
+
+```
+#是否启用RPC服务的SSL/TLS加密
+rpc-secure=true
+#申请的域名crt证书文件路径，自行修改
+rpc-certificate=//etc/letsencrypt/live/xxxx.xxx/fullchain.pem
+##申请的域名key证书文件路径，自行修改
+rpc-private-key=/etc/letsencrypt/live/xxxx.xxx/privkey.pem
 ```
 
 ## File Browser
@@ -403,8 +427,8 @@ filebrowser -d /etc/filemanager/filebrowser.db config set --locale zh-cn
 设置日志、用户
 
 ```
-sudo filebrowser -d /etc/filemanager/filebrowser.db config set --log /var/log/filebrowser.log
-sudo filebrowser -d /etc/filemanager/filebrowser.db users add admin password123 --perm.admin
+filebrowser -d /etc/filemanager/filebrowser.db config set --log /var/log/filebrowser.log
+filebrowser -d /etc/filemanager/filebrowser.db users add admin password123 --perm.admin
 ```
 
 admin 为用户，password123 为密码
@@ -414,7 +438,7 @@ admin 为用户，password123 为密码
 编写 service
 
 ```
-vim /etc/systemd/system/filebrowser.service
+nano /etc/systemd/system/filebrowser.service
 ```
 
 输入
@@ -443,6 +467,37 @@ systemctl enable filebrowser
 
 点击【设置】→【全局设置】→【用户默认设置】→ 将目录范围改为你想要显示的文件夹，如` ./root/downloads` →点击保存
 
+## Add domain to filebrowser
+
+- cd nginx folder
+- stop nginx service
+
+- acme.sh -d  yourdomain.com  --standalone
+
+
+
+
+     server {
+     listen       443 ssl http2;
+        listen       [::]:443 ssl http2;
+        server_name  yourdomain.com; #使用的域名
+    
+        ssl_certificate "/root/.acme.sh/yourdomain.com/yourdomain.com.cer"; # ssl public
+        ssl_certificate_key " /root/.acme.sh/yourdomain.com/yourdomain.com.key"; # ssl privkey
+        ssl_session_cache shared:SSL:1m;
+        ssl_session_timeout  10m;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_prefer_server_ciphers on;
+    
+        location / {
+                proxy_pass http://localhost:6080;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+    
+    }
 ## Goindex with Worker space
 
 快速：https://github.com/Aicirou/goindex-theme-acrou [中文文档](https://github.com/Aicirou/goindex-theme-acrou/blob/master/README_zh.md)
@@ -1433,36 +1488,4 @@ refer: https://www.moerats.com/archives/120/
 - 重启 crond
   - systemctl stop crond
   - systemctl start crond / service crond start
-
-## https for Aria2
-
-教程 https://certbot.eff.org/lets-encrypt/centosrhel8-other
-
-- 依次安装
-
-- 需要 Enable EPEL repo
-
-- 安装结束后记下 证书所在地址
-
-- crontab -e 
-
-  - ```
-    0 0,12 * * * root python3 -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q
-    # 自动更新证书
-    ```
-
-- 启用，编辑 `aria2.conf`
-
-```
-nano /root/.aria2c/aria2.conf
-```
-
-```
-#是否启用RPC服务的SSL/TLS加密
-rpc-secure=true
-#申请的域名crt证书文件路径，自行修改
-rpc-certificate=//etc/letsencrypt/live/xxxx.xxx/fullchain.pem
-##申请的域名key证书文件路径，自行修改
-rpc-private-key=/etc/letsencrypt/live/xxxx.xxx/privkey.pem
-```
 
